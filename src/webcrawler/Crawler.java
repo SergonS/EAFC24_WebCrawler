@@ -10,7 +10,7 @@ import org.jsoup.nodes.Element;
 
 public class Crawler 
 {
-	static String URL_MAIN = "\"https://www.fut.gg";
+	static String URL_MAIN = "https://www.fut.gg";
 	static String URL_PLAYERS = "https://www.fut.gg/players/";
 	
 	public static void main(String[] args) 
@@ -47,15 +47,28 @@ public class Crawler
 		{				
 			for(Element row : doc.select("div.-my-1"))
 			{
-				for (Element player : row.select("a"))
+				for (Element card : row.select("a"))
 				{
-					String relHref = player.attr("href");
-					String playerLink = URL_MAIN + relHref;
+					String relHref = card.attr("href");
+					String cardLink = URL_MAIN + relHref;
 					
-					System.out.println(playerLink);
+					Document cardDocument = request(cardLink);
+					
+					getCardInfo(cardDocument);
 				}
 			}
 		}
+	}
+	
+	private static void getCardInfo(Document card)
+	{
+		// Getting name in card
+		String name = card.select("h1").first().text();
+		System.out.println(name);
+		
+		// Getting player's full name
+		String details = card.select("div.paper.mb-3").select("div.flex.justify-between.mt-2").text();
+		System.out.println(details);
 	}
 	
 	
